@@ -54,7 +54,7 @@ function findMedianSortedArrays1(nums1: number[], nums2: number[]): number {
     }
 }
 
-// 解2：二分查找+递归 -116 ms & 44.2 MB
+// 解2：二分查找+递归 - 116 ms & 44.2 MB
 // 时间复杂度 O(log(m+n)) 符合要求
 function findMedianSortedArrays2(nums1: number[], nums2: number[]): number {
     const l1: number = nums1.length,
@@ -73,9 +73,9 @@ function findKthNum(nums1: number[], nums2: number[], k: number) {
     const l1: number = nums1.length,
         l2: number = nums2.length;
 
-    // 边界情况1：当index1越界时，直接返回nums2的第k小元素
+    // 边界情况1：当nums1为空数组时，直接返回nums2的第k小元素
     if (l1 === 0) return nums2[k - 1];
-    // 边界情况2：当index2越界时，直接返回nums1的第k小元素
+    // 边界情况2：当nums2为空数组时，直接返回nums1的第k小元素
     if (l2 === 0) return nums1[k - 1];
     // 边界情况2：当k=1时，返回nums1第一个元素和nums2第一个元素中较小的
     if (k === 1) {
@@ -86,9 +86,9 @@ function findKthNum(nums1: number[], nums2: number[], k: number) {
     const temp = Math.floor(k / 2);
     const index1 = Math.min(temp, l1) - 1;
     const index2 = Math.min(temp, l2) - 1;
-    // 比较 nums1[k/2-1]和nums1[k/2-1]
-    // 若nums1[k/2-1]小，忽略nums1[0]-nums1[k/2-1]；若nums2[k/2-1]小，忽略nums2[0]-nums2[k/2-1]
-    // 同时更新忽略后的数组和K用于下次迭代
+    // 比较 nums1[k/2-1] 和 nums1[k/2-1]
+    // 若 nums1[k/2-1] 小，忽略 nums1[0]-nums1[k/2-1]；若 nums2[k/2-1] 小，忽略 nums2[0]-nums2[k/2-1]
+    // 同时更新忽略后的数组和 K 用于下次迭代
     if (nums1[index1] <= nums2[index2]) {
         k = k - (index1 + 1);
         return findKthNum(nums1.slice(index1 + 1), nums2, k);
