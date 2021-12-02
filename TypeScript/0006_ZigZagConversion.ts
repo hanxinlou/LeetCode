@@ -36,7 +36,7 @@ Constraints:
     1 <= numRows <= 1000
 */
 
-// Hanxin Lou - 2021/12/1 - 112 ms & 42.4 MB
+// Hanxin Lou - 2021/12/01 - 112 ms & 42.4 MB
 function convert(s: string, numRows: number): string {
     // numRows小于2时直接返回s
     if (numRows < 2) return s;

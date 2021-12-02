@@ -26,7 +26,7 @@ Constraints:
     -231 <= x <= 231 - 1
 */
 
-// Hanxin Lou - 2021/12/1 - 84 ms & 39.7 MB
+// Hanxin Lou - 2021/12/01 - 84 ms & 39.7 MB
 
 // 数组 reverse 翻转
 function reverse(x: number): number {
