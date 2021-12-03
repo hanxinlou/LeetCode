@@ -87,10 +87,10 @@ Constraints:
     s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+', '-', and '.'.
 */
 
-// Hanxin Lou - 2021/12/2
+// Hanxin Lou - 2021/12/02
 
 // 解1：黑科技 parseInt - 84 ms & 40.1 MB
-function myAtoi(s: string): number {
+function myAtoi1(s: string): number {
     const res = parseInt(s, 10);
     if (isNaN(res)) {
         return 0;
@@ -101,4 +101,93 @@ function myAtoi(s: string): number {
     } else {
         return res;
     }
+}
+
+// 解2：自动机 - 100 ms & 43.9 MB
+
+/*
+|-----------| ''(Space) | +/-(Sign) |  Number   | Other |
+|   start   |   start   |  signed   | in_number |  end  |
+|  signed   |    end    |    end    | in_number |  end  |
+| in_number |    end    |    end    | in_number |  end  |
+|    end    |    end    |    end    |    end    |  end  |
+
+不同的行象征不同执行阶段：
+    第0行：开始转换阶段
+    第1行：判断正负阶段
+    第2行：生成数值阶段
+    第3行：结束转换阶段
+
+不同的列象征不同的字符类型：
+    第0列：字符为空格
+    第1列：字符为正、负号
+    第2列：字符为字符型数值
+    第3列：字符为其他形式
+*/
+
+function myAtoi2(s: string): number {
+    const MAX_INT = Math.pow(2, 31) - 1
+    const MIN_INT = -Math.pow(2, 31)
+    const reg = new RegExp('^[0-9]*$')
+
+    // 自动机类
+    class Automaton {
+        state: string;
+        sign: number;
+        answer: number;
+        map: Map<string, string[]>;
+        
+        constructor() {
+            // 执行阶段，默认处于开始执行阶段
+            this.state = "start";
+            // 正负符号，默认是正数
+            this.sign = 1;
+            // 数值，默认是0
+            this.answer = 0;
+            // [执行阶段, [空格, 正负, 数值, 其他]]
+            this.map = new Map([
+                ["start", ["start", "signed", "in_number", "end"]],
+                ["signed", ["end", "end", "in_number", "end"]],
+                ["in_number", ["end", "end", "in_number", "end"]],
+                ["end", ["end", "end", "end", "end"]],
+            ]);
+        }
+
+        // 获取状态的索引
+        getIndex(char:string) {
+            if (char === " ") {
+                return 0;
+            } else if (char === "-" || char === "+") {
+                return 1;
+            } else if (reg.test(char)) {
+                return 2;
+            } else {
+                return 3;
+            }
+        }
+        get(char:any) {
+            this.state = this.map.get(this.state)[this.getIndex(char)];
+            
+            if (this.state === "in_number") {
+                this.answer = this.answer * 10 + (char - 0);
+                this.answer =
+                    this.sign === 1
+                        ? Math.min(this.answer, MAX_INT)
+                        : Math.min(this.answer, -MIN_INT);
+            } else if (this.state === "signed") {
+                this.sign = char === "+" ? 1 : -1;
+            }
+        }
+    }
+
+    // 生成自动机实例
+    let automaton = new Automaton();
+
+    // 遍历每个字符
+    for (let char of s) {
+        automaton.get(char);
+    }
+
+    // 返回值，整数 = 正负 * 数值
+    return automaton.sign * automaton.answer;
 }
